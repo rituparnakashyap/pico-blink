@@ -1,0 +1,15 @@
+# Raspberry Pi Pico W - Bink program
+
+This is a bink demo of onboard Pico W LED. Following are the feature list of this project
+1. The onboard led binks on and off every second. 
+1. Enabled development on devcontainer, while installing all required dependencies. 
+1. Install all required VSCode extension required for developement.  
+1. Enabled debugging with the Raspberry Debug Probe. 
+1. Enabled serial terminal monitoring with `minicom`. Use `showcom` (alias) command on the bash prompt of the container.
+1. Enabled uploading the UF2 binary over Serial Wire Debug (SWD) protocol. Use `upload-uf2` (alias) command on the bash prompt of the container. 
+
+
+# Setup
+1. Clone the repository by using `git clone git@github.com:rituparnakashyap/pico-blink.git`.
+1. Install docker - https://docs.docker.com/engine/install/
+1. Install VSCode and open the pico-blink folder. The IDE should do all the rest, including installing required dependency. 
