@@ -1,12 +1,28 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "RPI Pico - Blinky Sketch",
+	"name": "RPI Pico W - Blinky Sketch",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"build": {
         // Path is relative to the devcontainer.json file.
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile",
+		
+		// Build time argument for the Dockerfile
+		"args": {
+			"USERNAME": "${localEnv:USER}" // create same user name as in host. 
+		}
     },
+
+	// Docker run argument
+	"runArgs": [
+		// Allowing ptrace debugger within the docker container
+		"--cap-add=SYS_PTRACE", 
+		"--security-opt", 
+		"seccomp=unconfined",
+		// mounting the probes into the docker container
+		"--device=/dev/bus/usb",
+		"--device=/dev/ttyACM0"
+	],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -15,26 +31,36 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "mkdir -p build && cd build && cmake .. -DPICO_BOARD=pico_w",
+	"postCreateCommand": "mkdir -p build && cd build && cmake .. -DPICO_BOARD=pico_w -DCMAKE_BUILD_TYPE=Debug",
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
 			"extensions": [
-			"ms-vscode.cpptools",
-			"ms-vscode.cmake-tools",
-			"ms-vscode.cpptools-extension-pack"
-			]
-		},
-		"settings": {
-			"terminal.integrated.defaultProfile.linux": "bash",
-			"terminal.integrated.profiles.linux": {
-			"bash": {
-				"path": "/bin/bash"
-			}
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools-extension-pack",
+				"marus25.cortex-debug"
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				}
 			}
 		}
-	}
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+		
+	},
+	// Mount more directories
+	"mounts": [
+		"source=${localWorkspaceFolder}/.devcontainer/bashrc,target=/home/${localEnv:USER}/.bashrc,type=bind,consistency=cached"
+	],
+
+	// Comment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "${localEnv:USER}",
+	"containerUser": "${localEnv:USER}",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/workspace,type=bind",
+	"workspaceFolder": "/home/${localEnv:USER}/workspace"
 }
